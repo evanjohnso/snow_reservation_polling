@@ -105,29 +105,35 @@ var App = function (_React$Component) {
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 1: Enable Notifications (use Firefox)" }),
+          React.createElement(Step, { text: "Step 1: Use Firefox" }),
           React.createElement(NotificationsButton, null)
         ),
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 2: Select Your Days" }),
+          React.createElement(Step, { text: "Step 2: Enable Notifications (use Firefox)" }),
+          React.createElement(NotificationsButton, null)
+        ),
+        React.createElement(
+          Row,
+          null,
+          React.createElement(Step, { text: "Step 3: Select Your Days" }),
           React.createElement(Calendar, { onChange: this.handleDateChange })
         ),
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 3: Make reservation when your operating system notifies you!" })
+          React.createElement(Step, { text: "Step 4: Make reservation when your operating system notifies you!" })
         ),
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 4: Test it out. Find a day that has openings, and make sure it works!" })
+          React.createElement(Step, { text: "Step 5: Test it out. Find a day that has openings, and make sure it works!" })
         ),
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 5: Hang out, and pray to Ullr for snow!" })
+          React.createElement(Step, { text: "Step 6: Hang out, and pray to Ullr for snow!" })
         )
       );
     }
@@ -264,7 +270,7 @@ function notify_day_available(day) {
     var message = "Parking is available for " + day + "!!!";
     console.log(message);
     var my_notification = new Notification(message, {
-      body: "Quick, click HERE to make the reservation!",
+      body: "Quick, click here to make the reservation!",
       icon: "https://bit.ly/2DYqRrh"
     });
     my_notification.onclick = bachelor_notification;
