@@ -160,7 +160,7 @@ function DateToSki(props) {
       <span
         onClick={() => props.handleClick(props.day)}
         style={{ cursor: "pointer", marginLeft: "5px" }}
-        title="Actually, nah. Don't wannt ski this day"
+        title="Actually, nah. Not tryna ski this day"
       >
         X
       </span>

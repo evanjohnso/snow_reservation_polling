@@ -30,8 +30,13 @@ var App = function (_React$Component) {
 
     _this.handleDateChange = function (e) {
       var copy = [].concat(_toConsumableArray(_this.state.daysToSki));
-      copy.push(transformDate(e.target.value));
-      _this.updateDaysToSki(copy);
+      var day = transformDate(e.target.value);
+      if (copy.indexOf(day) === -1) {
+        copy.push(transformDate(e.target.value));
+        _this.updateDaysToSki(copy);
+      } else {
+        console.log("Day already being searched");
+      }
     };
 
     _this.handleRemoveDay = function (day) {
@@ -206,7 +211,7 @@ function DateToSki(props) {
           return props.handleClick(props.day);
         },
         style: { cursor: "pointer", marginLeft: "5px" },
-        title: "Actually, nah. Don't wannt ski this day"
+        title: "Actually, nah. Not tryna ski this day"
       },
       "X"
     )
