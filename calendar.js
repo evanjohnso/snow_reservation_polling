@@ -105,8 +105,7 @@ var App = function (_React$Component) {
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 1: Use Firefox" }),
-          React.createElement(NotificationsButton, null)
+          React.createElement(Step, { text: "Step 1: Use Firefox" })
         ),
         React.createElement(
           Row,
