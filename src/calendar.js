@@ -82,24 +82,45 @@ class App extends React.Component {
             );
           })}
         </div>
-        <Calendar onChange={this.handleDateChange} />
-        <NotificationsButton />
-        <MakeReservationLink />
+        <Row>
+          <Step text="Step 1: Enable Notifications (use Firefox)" />
+          <NotificationsButton />
+        </Row>
+        <Row>
+          <Step text="Step 2: Select Your Days" />
+          <Calendar onChange={this.handleDateChange} />
+        </Row>
+        <Row>
+          <Step text="Step 3: Make reservation when your operating system notifies you!" />
+        </Row>
+        <Row>
+          <Step text="Step 4: Hang out, and pray to Ullr for snow!" />
+        </Row>
       </AppWrapper>
     );
   }
 }
+function Row(props) {
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "row", marginBottom: "10px" }}
+    >
+      {props.children}
+    </div>
+  );
+}
 
+function Step(props) {
+  return (
+    <div style={{ fontSize: "20px", marginRight: "20px" }}>{props.text}</div>
+  );
+}
 function Calendar(props) {
   return <input type="date" onChange={props.onChange} />;
 }
 
 function NotificationsButton() {
-  return (
-    <button onClick={handleEnableNotificationButton}>
-      Enable Notifications
-    </button>
-  );
+  return <button onClick={handleEnableNotificationButton}>Enable</button>;
 }
 
 function AppWrapper(props) {
@@ -108,7 +129,7 @@ function AppWrapper(props) {
       style={{
         display: "flex",
         flexDirection: "column",
-        width: "25%",
+        maxWidth: "75%",
       }}
     >
       {props.children}
@@ -196,26 +217,34 @@ function notify_day_available(day) {
     // show notification here
     var message = `Parking is available for ${day}!!!`;
     console.log(message);
-    new Notification(message, {
-      body: `Quick, click the link on the browser to make the reservation!`,
+    var my_notification = new Notification(message, {
+      body: `Quick, click HERE to make the reservation!`,
       icon: "https://bit.ly/2DYqRrh",
     });
+    my_notification.onclick = bachelor_notification;
   }
+}
+
+function bachelor_notification(event) {
+  event.preventDefault(); // prevent the browser from focusing the Notification's tab
+  window.open(make_reservation_url, "_blank");
 }
 
 function handleEnableNotificationButton() {
   var title = "Notifications are enabled!";
-  var message = "Watch for this alert here if your day opens up";
+  var message =
+    "Watch for this alert here if your day opens up. Click this notification to be taken to the Bachelor reservation page. Try it now!";
   if (!window.Notification) {
     console.log("Browser does not support notifications.");
   } else {
     // check if permission is already granted
     if (Notification.permission === "granted") {
       // show notification here
-      new Notification(title, {
+      var theNotification = new Notification(title, {
         body: message,
         icon: "https://bit.ly/2DYqRrh",
       });
+      theNotification.onclick = bachelor_notification;
     } else {
       // request permission from user
       Notification.requestPermission()
@@ -226,6 +255,7 @@ function handleEnableNotificationButton() {
               body: message,
               icon: "https://bit.ly/2DYqRrh",
             });
+            notify.onclick = bachelor_notification;
           } else {
             console.log("User blocked notifications.");
           }
