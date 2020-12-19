@@ -111,7 +111,7 @@ var App = function (_React$Component) {
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 2: Enable Notifications (use Firefox)" }),
+          React.createElement(Step, { text: "Step 2: Enable Notifications" }),
           React.createElement(NotificationsButton, null)
         ),
         React.createElement(

@@ -87,7 +87,7 @@ class App extends React.Component {
           <NotificationsButton />
         </Row>
         <Row>
-          <Step text="Step 2: Enable Notifications (use Firefox)" />
+          <Step text="Step 2: Enable Notifications" />
           <NotificationsButton />
         </Row>
         <Row>
