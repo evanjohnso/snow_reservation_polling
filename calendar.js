@@ -122,12 +122,12 @@ var App = function (_React$Component) {
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 5: Test it out. Find a day that has openings, and make sure it works!" })
+          React.createElement(Step, { text: "Step 4: Test it out. Find a day that has openings, and make sure it works!" })
         ),
         React.createElement(
           Row,
           null,
-          React.createElement(Step, { text: "Step 4: Hang out, and pray to Ullr for snow!" })
+          React.createElement(Step, { text: "Step 5: Hang out, and pray to Ullr for snow!" })
         )
       );
     }

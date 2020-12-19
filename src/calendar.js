@@ -94,10 +94,10 @@ class App extends React.Component {
           <Step text="Step 3: Make reservation when your operating system notifies you!" />
         </Row>
         <Row>
-          <Step text="Step 5: Test it out. Find a day that has openings, and make sure it works!" />
+          <Step text="Step 4: Test it out. Find a day that has openings, and make sure it works!" />
         </Row>
         <Row>
-          <Step text="Step 4: Hang out, and pray to Ullr for snow!" />
+          <Step text="Step 5: Hang out, and pray to Ullr for snow!" />
         </Row>
       </AppWrapper>
     );
