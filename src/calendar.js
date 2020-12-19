@@ -23,8 +23,13 @@ class App extends React.Component {
 
   handleDateChange = (e) => {
     var copy = [...this.state.daysToSki];
-    copy.push(transformDate(e.target.value));
-    this.updateDaysToSki(copy);
+    var day = transformDate(e.target.value);
+    if (copy.indexOf(day) === -1) {
+      copy.push(transformDate(e.target.value));
+      this.updateDaysToSki(copy);
+    } else {
+      console.log("Day already being searched");
+    }
   };
 
   handleRemoveDay = (day) => {
