@@ -71,7 +71,7 @@ class App extends React.Component {
   render() {
     return (
       <AppWrapper>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
           {this.state.daysToSki.map((day) => {
             return (
               <DateToSki

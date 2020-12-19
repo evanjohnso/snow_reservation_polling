@@ -93,7 +93,7 @@ var App = function (_React$Component) {
         null,
         React.createElement(
           "div",
-          { style: { display: "flex" } },
+          { style: { display: "flex", flexWrap: "wrap" } },
           this.state.daysToSki.map(function (day) {
             return React.createElement(DateToSki, {
               handleClick: _this2.handleRemoveDay,
