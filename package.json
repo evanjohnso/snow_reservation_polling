@@ -1,0 +1,24 @@
+{
+  "name": "snow_reservation_polling",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bachelor_polling.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evanjohnso/snow_reservation_polling.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evanjohnso/snow_reservation_polling/issues"
+  },
+  "homepage": "https://github.com/evanjohnso/snow_reservation_polling#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2"
+  }
+}

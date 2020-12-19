@@ -1,8 +1,18 @@
 <html>
   <head></head>
   <body>
-    <button>Poll</button>
-    <input type="date" />
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+
+    <!-- Load our React component. -->
+    <div id="app_container"></div>
+    <script src="./calendar.js"></script>
   </body>
-  <script src="./bachelor_polling.js"></script>
 </html>
