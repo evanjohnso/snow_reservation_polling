@@ -47,7 +47,7 @@ class App extends React.Component {
 
   pollOnInterval = (days) => {
     if (days && days.length) {
-      return setInterval(() => this.pollIt(days), 15 * 1000);
+      return setInterval(() => this.pollIt(days), 10 * 1000);
     }
     return undefined;
   };
@@ -66,7 +66,6 @@ class App extends React.Component {
           if (matchingDays.length) {
             matchingDays.forEach((dizzle) => {
               notify_day_available(dizzle);
-              this.handleRemoveDay(dizzle);
             });
           }
         });
