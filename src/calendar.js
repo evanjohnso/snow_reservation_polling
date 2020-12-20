@@ -59,15 +59,11 @@ class App extends React.Component {
       })
       .then((days) => {
         console.log(`Checking for ${daysIWantToSki.join(", ")}`);
-        days.forEach((day) => {
-          var matchingDays = daysIWantToSki.filter(
-            (d) => day.name.includes(d) && doesDayHaveParking(day)
-          );
-          if (matchingDays.length) {
-            matchingDays.forEach((dizzle) => {
-              notify_day_available(dizzle);
-            });
-          }
+        days.forEach((dayInfo) => {
+          daysIWantToSki
+            .filter((d) => dayInfo.name.includes(d))
+            .filter((d) => doesDayHaveParking(dayInfo))
+            .forEach(notify_day_available);
         });
       });
   };

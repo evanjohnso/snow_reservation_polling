@@ -58,7 +58,7 @@ var App = function (_React$Component) {
       if (days && days.length) {
         return setInterval(function () {
           return _this.pollIt(days);
-        }, 15 * 1000);
+        }, 10 * 1000);
       }
       return undefined;
     };
@@ -68,16 +68,12 @@ var App = function (_React$Component) {
         if (response.ok) return response.json();
       }).then(function (days) {
         console.log("Checking for " + daysIWantToSki.join(", "));
-        days.forEach(function (day) {
-          var matchingDays = daysIWantToSki.filter(function (d) {
-            return day.name.includes(d) && doesDayHaveParking(day);
-          });
-          if (matchingDays.length) {
-            matchingDays.forEach(function (dizzle) {
-              notify_day_available(dizzle);
-              _this.handleRemoveDay(dizzle);
-            });
-          }
+        days.forEach(function (dayInfo) {
+          daysIWantToSki.filter(function (d) {
+            return dayInfo.name.includes(d);
+          }).filter(function (d) {
+            return doesDayHaveParking(dayInfo);
+          }).forEach(notify_day_available);
         });
       });
     };
