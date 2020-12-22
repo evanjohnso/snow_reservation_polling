@@ -120,7 +120,7 @@ class App extends React.Component {
           })}
         </div>
         <Step text="Step 1: Use Firefox" />
-        <Step text="Step 2: Pick your hill">
+        <Step text="Step 2: Select your hill">
           <Dropdown
             values={Object.keys(SKI_RESORTS)}
             onChange={this.handleResortChange}
@@ -128,14 +128,14 @@ class App extends React.Component {
             renderLabel={dispalySkiResortLabel}
           />
         </Step>
-        <Step text="Step 3: Enable Notifications">
+        <Step text="Step 3: Enable notifications">
           <NotificationsButton link={make_reservation_url} />
         </Step>
-        <Step text="Step 4: Select Your Days">
+        <Step text="Step 4: Select your days">
           <Calendar onChange={this.handleDateChange} />
         </Step>
         <Step text="Step 5: Test it out. Find a day that has openings, and make sure it works!" />
-        <Step text="Step 6: Hang out, and pray to Ullr for snow!" />
+        <Step text="Step 6: Hang out, and pray to the almighty Ullr" />
       </AppWrapper>
     );
   }
@@ -154,7 +154,7 @@ function Row(props) {
 function Step(props) {
   return (
     <Row>
-      <div style={{ fontSize: "20px", marginRight: "20px" }}>{props.text}</div>
+      <div style={{ fontSize: "21px", marginRight: "20px" }}>{props.text}</div>
       {props.children}
     </Row>
   );
@@ -178,7 +178,9 @@ function AppWrapper(props) {
         display: "flex",
         flexDirection: "column",
         maxWidth: "75%",
+        marginTop: "10%",
       }}
+      className={"center"}
     >
       {props.children}
     </div>

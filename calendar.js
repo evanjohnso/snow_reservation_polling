@@ -144,7 +144,7 @@ var App = function (_React$Component) {
         React.createElement(Step, { text: "Step 1: Use Firefox" }),
         React.createElement(
           Step,
-          { text: "Step 2: Pick your hill" },
+          { text: "Step 2: Select your hill" },
           React.createElement(Dropdown, {
             values: Object.keys(SKI_RESORTS),
             onChange: this.handleResortChange,
@@ -154,16 +154,16 @@ var App = function (_React$Component) {
         ),
         React.createElement(
           Step,
-          { text: "Step 3: Enable Notifications" },
+          { text: "Step 3: Enable notifications" },
           React.createElement(NotificationsButton, { link: make_reservation_url })
         ),
         React.createElement(
           Step,
-          { text: "Step 4: Select Your Days" },
+          { text: "Step 4: Select your days" },
           React.createElement(Calendar, { onChange: this.handleDateChange })
         ),
         React.createElement(Step, { text: "Step 5: Test it out. Find a day that has openings, and make sure it works!" }),
-        React.createElement(Step, { text: "Step 6: Hang out, and pray to Ullr for snow!" })
+        React.createElement(Step, { text: "Step 6: Hang out, and pray to the almighty Ullr" })
       );
     }
   }]);
@@ -187,7 +187,7 @@ function Step(props) {
     null,
     React.createElement(
       "div",
-      { style: { fontSize: "20px", marginRight: "20px" } },
+      { style: { fontSize: "21px", marginRight: "20px" } },
       props.text
     ),
     props.children
@@ -214,8 +214,10 @@ function AppWrapper(props) {
       style: {
         display: "flex",
         flexDirection: "column",
-        maxWidth: "75%"
-      }
+        maxWidth: "75%",
+        marginTop: "10%"
+      },
+      className: "center"
     },
     props.children
   );
