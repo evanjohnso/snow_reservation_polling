@@ -3,12 +3,36 @@
 // run `npx babel --watch src --out-dir . --presets react-app/prod`
 // in the directory to get updates locally (idk what i did to require that)
 
-const check_availability_url =
-  "https://api.parkwhiz.com/v4/venues/478498/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-13T00%3A00%3A00-08%3A00&sort=start_time&zoom=pw%3Avenue";
+const mount_bachelor = {
+  availability_url:
+    "https://api.parkwhiz.com/v4/venues/478498/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-13T00%3A00%3A00-08%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url:
+    "https://www.mtbachelor.com/plan-your-trip/getting-here/parking-reservations",
+};
 
-const make_reservation_url =
-  "https://www.mtbachelor.com/plan-your-trip/getting-here/parking-reservations";
+const copper_mountain = {
+  availability_url:
+    "https://api.parkwhiz.com/v4/venues/448854/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url:
+    "https://www.coppercolorado.com/plan-your-trip/getting-here/parking",
+};
+
+const alta_mountain = {
+  availability_url:
+    "https://api.parkwhiz.com/v4/venues/478424/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url: "https://www.snowbird.com/parking/",
+};
+
+const SKI_RESORTS = {
+  alta: alta_mountain,
+  bachelor: mount_bachelor,
+  copper: copper_mountain,
+};
+
+const defaultResort = Object.keys(SKI_RESORTS)[0];
+
 const _localStorageSkiDaysKey = "daysIWantToSki";
+const _localStorageResortKey = "ski_resort";
 
 class App extends React.Component {
   intervalKey = undefined;
@@ -17,7 +41,9 @@ class App extends React.Component {
     super(props);
     var localStorageDays =
       JSON.parse(localStorage.getItem(_localStorageSkiDaysKey)) || [];
-    this.state = { daysToSki: localStorageDays };
+    var skiResort =
+      localStorage.getItem(_localStorageResortKey) || defaultResort;
+    this.state = { daysToSki: localStorageDays, skiResort };
     this.intervalKey = this.pollOnInterval(this.state.daysToSki);
   }
 
@@ -53,7 +79,10 @@ class App extends React.Component {
   };
 
   pollIt = (daysIWantToSki) => {
-    fetch(check_availability_url)
+    var { availability_url, make_reservation_url } = SKI_RESORTS[
+      this.state.skiResort
+    ];
+    fetch(availability_url)
       .then((response) => {
         if (response.ok) return response.json();
       })
@@ -61,14 +90,22 @@ class App extends React.Component {
         console.log(`Checking for ${daysIWantToSki.join(", ")}`);
         days.forEach((dayInfo) => {
           daysIWantToSki
-            .filter((d) => dayInfo.name.includes(d))
+            .filter((d) => dayInfo.name.includes(d + " ")) // dont match on "Mar 22" when "Mar 2" was picked
             .filter((d) => doesDayHaveParking(dayInfo))
-            .forEach(notify_day_available);
+            .forEach((d) => notify_day_available(d, make_reservation_url));
         });
       });
   };
 
+  handleResortChange = (e) => {
+    var resort = e.target.value;
+    this.setState({ skiResort: resort });
+    localStorage.setItem(_localStorageResortKey, resort);
+  };
+
   render() {
+    var { make_reservation_url } = SKI_RESORTS[this.state.skiResort];
+
     return (
       <AppWrapper>
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -82,30 +119,28 @@ class App extends React.Component {
             );
           })}
         </div>
-        <Row>
-          <Step text="Step 1: Use Firefox" />
-        </Row>
-        <Row>
-          <Step text="Step 2: Enable Notifications" />
-          <NotificationsButton />
-        </Row>
-        <Row>
-          <Step text="Step 3: Select Your Days" />
+        <Step text="Step 1: Use Firefox" />
+        <Step text="Step 2: Pick your hill">
+          <Dropdown
+            values={Object.keys(SKI_RESORTS)}
+            onChange={this.handleResortChange}
+            selectedValue={this.state.skiResort}
+            renderLabel={dispalySkiResortLabel}
+          />
+        </Step>
+        <Step text="Step 3: Enable Notifications">
+          <NotificationsButton link={make_reservation_url} />
+        </Step>
+        <Step text="Step 4: Select Your Days">
           <Calendar onChange={this.handleDateChange} />
-        </Row>
-        <Row>
-          <Step text="Step 4: Make reservation when your operating system notifies you!" />
-        </Row>
-        <Row>
-          <Step text="Step 5: Test it out. Find a day that has openings, and make sure it works!" />
-        </Row>
-        <Row>
-          <Step text="Step 6: Hang out, and pray to Ullr for snow!" />
-        </Row>
+        </Step>
+        <Step text="Step 5: Test it out. Find a day that has openings, and make sure it works!" />
+        <Step text="Step 6: Hang out, and pray to Ullr for snow!" />
       </AppWrapper>
     );
   }
 }
+
 function Row(props) {
   return (
     <div
@@ -118,15 +153,22 @@ function Row(props) {
 
 function Step(props) {
   return (
-    <div style={{ fontSize: "20px", marginRight: "20px" }}>{props.text}</div>
+    <Row>
+      <div style={{ fontSize: "20px", marginRight: "20px" }}>{props.text}</div>
+      {props.children}
+    </Row>
   );
 }
 function Calendar(props) {
   return <input type="date" onChange={props.onChange} />;
 }
 
-function NotificationsButton() {
-  return <button onClick={handleEnableNotificationButton}>Enable</button>;
+function NotificationsButton(props) {
+  return (
+    <button onClick={() => handleEnableNotificationButton(props.link)}>
+      Enable
+    </button>
+  );
 }
 
 function AppWrapper(props) {
@@ -168,11 +210,24 @@ function DateToSki(props) {
   );
 }
 
-function MakeReservationLink() {
+function Dropdown(props) {
   return (
-    <a href={make_reservation_url} target="_blank">
-      Bachelor Reservation Page
-    </a>
+    <div>
+      <select
+        id="mountainSelect"
+        name="mountains"
+        onChange={props.onChange}
+        value={props.selectedValue}
+      >
+        {props.values.map((val) => {
+          return (
+            <option value={val} key={val}>
+              {props.renderLabel(val)}
+            </option>
+          );
+        })}
+      </select>
+    </div>
   );
 }
 
@@ -218,50 +273,53 @@ function monthDateToWord(int) {
 let domContainer = document.querySelector("#app_container");
 ReactDOM.render(<App />, domContainer);
 
-function notify_day_available(day) {
+function notify_day_available(day, makeReservationLink) {
   if (Notification.permission === "granted") {
+    var title = `Parking is available for ${day}!!!`;
+    var message = "Quick, click here to make the reservation!";
+
     // show notification here
-    var message = `Parking is available for ${day}!!!`;
-    console.log(message);
-    var my_notification = new Notification(message, {
-      body: `Quick, click here to make the reservation!`,
-      icon: "https://bit.ly/2DYqRrh",
-    });
-    my_notification.onclick = bachelor_notification;
+    var my_notification = new Notification(title, { body: message });
+    my_notification.onclick = (e) => onAlertClick(e, makeReservationLink);
   }
 }
 
-function bachelor_notification(event) {
+function onAlertClick(event, makeReservationLink) {
   event.preventDefault(); // prevent the browser from focusing the Notification's tab
-  window.open(make_reservation_url, "_blank");
+  window.open(makeReservationLink, "_blank");
 }
 
-function handleEnableNotificationButton() {
+function dispalySkiResortLabel(resort) {
+  switch (resort) {
+    case "alta":
+      return "Alta Snowbird";
+    case "bachelor":
+      return "Mount Bachelor";
+    case "copper":
+      return "Copper Mountain";
+  }
+}
+
+function handleEnableNotificationButton(makeReservationLink) {
   var title = "Notifications are enabled!";
   var message =
-    "Watch for this alert here if your day opens up. Click this notification to be taken to the Bachelor reservation page. Try it now!";
+    "Watch for this alert here if your day opens up. Click this notification to be taken to the reservation page. Try it now!";
   if (!window.Notification) {
     console.log("Browser does not support notifications.");
   } else {
     // check if permission is already granted
     if (Notification.permission === "granted") {
       // show notification here
-      var theNotification = new Notification(title, {
-        body: message,
-        icon: "https://bit.ly/2DYqRrh",
-      });
-      theNotification.onclick = bachelor_notification;
+      var theNotification = new Notification(title, { body: message });
+      theNotification.onclick = (e) => onAlertClick(e, makeReservationLink);
     } else {
       // request permission from user
       Notification.requestPermission()
         .then(function (p) {
           if (p === "granted") {
             // show notification here
-            var notify = new Notification(title, {
-              body: message,
-              icon: "https://bit.ly/2DYqRrh",
-            });
-            notify.onclick = bachelor_notification;
+            var notify = new Notification(title, { body: message });
+            notify.onclick = (e) => onAlertClick(e, makeReservationLink);
           } else {
             console.log("User blocked notifications.");
           }

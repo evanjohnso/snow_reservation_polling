@@ -13,10 +13,31 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var check_availability_url = "https://api.parkwhiz.com/v4/venues/478498/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-13T00%3A00%3A00-08%3A00&sort=start_time&zoom=pw%3Avenue";
+var mount_bachelor = {
+  availability_url: "https://api.parkwhiz.com/v4/venues/478498/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-13T00%3A00%3A00-08%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url: "https://www.mtbachelor.com/plan-your-trip/getting-here/parking-reservations"
+};
 
-var make_reservation_url = "https://www.mtbachelor.com/plan-your-trip/getting-here/parking-reservations";
+var copper_mountain = {
+  availability_url: "https://api.parkwhiz.com/v4/venues/448854/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url: "https://www.coppercolorado.com/plan-your-trip/getting-here/parking"
+};
+
+var alta_mountain = {
+  availability_url: "https://api.parkwhiz.com/v4/venues/478424/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
+  make_reservation_url: "https://www.snowbird.com/parking/"
+};
+
+var SKI_RESORTS = {
+  alta: alta_mountain,
+  bachelor: mount_bachelor,
+  copper: copper_mountain
+};
+
+var defaultResort = Object.keys(SKI_RESORTS)[0];
+
 var _localStorageSkiDaysKey = "daysIWantToSki";
+var _localStorageResortKey = "ski_resort";
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -64,22 +85,36 @@ var App = function (_React$Component) {
     };
 
     _this.pollIt = function (daysIWantToSki) {
-      fetch(check_availability_url).then(function (response) {
+      var _SKI_RESORTS$_this$st = SKI_RESORTS[_this.state.skiResort],
+          availability_url = _SKI_RESORTS$_this$st.availability_url,
+          make_reservation_url = _SKI_RESORTS$_this$st.make_reservation_url;
+
+      fetch(availability_url).then(function (response) {
         if (response.ok) return response.json();
       }).then(function (days) {
         console.log("Checking for " + daysIWantToSki.join(", "));
         days.forEach(function (dayInfo) {
           daysIWantToSki.filter(function (d) {
-            return dayInfo.name.includes(d);
-          }).filter(function (d) {
+            return dayInfo.name.includes(d + " ");
+          }) // dont match on "Mar 22" when "Mar 2" was picked
+          .filter(function (d) {
             return doesDayHaveParking(dayInfo);
-          }).forEach(notify_day_available);
+          }).forEach(function (d) {
+            return notify_day_available(d, make_reservation_url);
+          });
         });
       });
     };
 
+    _this.handleResortChange = function (e) {
+      var resort = e.target.value;
+      _this.setState({ skiResort: resort });
+      localStorage.setItem(_localStorageResortKey, resort);
+    };
+
     var localStorageDays = JSON.parse(localStorage.getItem(_localStorageSkiDaysKey)) || [];
-    _this.state = { daysToSki: localStorageDays };
+    var skiResort = localStorage.getItem(_localStorageResortKey) || defaultResort;
+    _this.state = { daysToSki: localStorageDays, skiResort: skiResort };
     _this.intervalKey = _this.pollOnInterval(_this.state.daysToSki);
     return _this;
   }
@@ -88,6 +123,9 @@ var App = function (_React$Component) {
     key: "render",
     value: function render() {
       var _this2 = this;
+
+      var make_reservation_url = SKI_RESORTS[this.state.skiResort].make_reservation_url;
+
 
       return React.createElement(
         AppWrapper,
@@ -103,38 +141,29 @@ var App = function (_React$Component) {
             });
           })
         ),
+        React.createElement(Step, { text: "Step 1: Use Firefox" }),
         React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 1: Use Firefox" })
+          Step,
+          { text: "Step 2: Pick your hill" },
+          React.createElement(Dropdown, {
+            values: Object.keys(SKI_RESORTS),
+            onChange: this.handleResortChange,
+            selectedValue: this.state.skiResort,
+            renderLabel: dispalySkiResortLabel
+          })
         ),
         React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 2: Enable Notifications" }),
-          React.createElement(NotificationsButton, null)
+          Step,
+          { text: "Step 3: Enable Notifications" },
+          React.createElement(NotificationsButton, { link: make_reservation_url })
         ),
         React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 3: Select Your Days" }),
+          Step,
+          { text: "Step 4: Select Your Days" },
           React.createElement(Calendar, { onChange: this.handleDateChange })
         ),
-        React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 4: Make reservation when your operating system notifies you!" })
-        ),
-        React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 5: Test it out. Find a day that has openings, and make sure it works!" })
-        ),
-        React.createElement(
-          Row,
-          null,
-          React.createElement(Step, { text: "Step 6: Hang out, and pray to Ullr for snow!" })
-        )
+        React.createElement(Step, { text: "Step 5: Test it out. Find a day that has openings, and make sure it works!" }),
+        React.createElement(Step, { text: "Step 6: Hang out, and pray to Ullr for snow!" })
       );
     }
   }]);
@@ -154,19 +183,26 @@ function Row(props) {
 
 function Step(props) {
   return React.createElement(
-    "div",
-    { style: { fontSize: "20px", marginRight: "20px" } },
-    props.text
+    Row,
+    null,
+    React.createElement(
+      "div",
+      { style: { fontSize: "20px", marginRight: "20px" } },
+      props.text
+    ),
+    props.children
   );
 }
 function Calendar(props) {
   return React.createElement("input", { type: "date", onChange: props.onChange });
 }
 
-function NotificationsButton() {
+function NotificationsButton(props) {
   return React.createElement(
     "button",
-    { onClick: handleEnableNotificationButton },
+    { onClick: function onClick() {
+        return handleEnableNotificationButton(props.link);
+      } },
     "Enable"
   );
 }
@@ -214,11 +250,26 @@ function DateToSki(props) {
   );
 }
 
-function MakeReservationLink() {
+function Dropdown(props) {
   return React.createElement(
-    "a",
-    { href: make_reservation_url, target: "_blank" },
-    "Bachelor Reservation Page"
+    "div",
+    null,
+    React.createElement(
+      "select",
+      {
+        id: "mountainSelect",
+        name: "mountains",
+        onChange: props.onChange,
+        value: props.selectedValue
+      },
+      props.values.map(function (val) {
+        return React.createElement(
+          "option",
+          { value: val, key: val },
+          props.renderLabel(val)
+        );
+      })
+    )
   );
 }
 
@@ -264,48 +315,57 @@ function monthDateToWord(int) {
 var domContainer = document.querySelector("#app_container");
 ReactDOM.render(React.createElement(App, null), domContainer);
 
-function notify_day_available(day) {
+function notify_day_available(day, makeReservationLink) {
   if (Notification.permission === "granted") {
+    var title = "Parking is available for " + day + "!!!";
+    var message = "Quick, click here to make the reservation!";
+
     // show notification here
-    var message = "Parking is available for " + day + "!!!";
-    console.log(message);
-    var my_notification = new Notification(message, {
-      body: "Quick, click here to make the reservation!",
-      icon: "https://bit.ly/2DYqRrh"
-    });
-    my_notification.onclick = bachelor_notification;
+    var my_notification = new Notification(title, { body: message });
+    my_notification.onclick = function (e) {
+      return onAlertClick(e, makeReservationLink);
+    };
   }
 }
 
-function bachelor_notification(event) {
+function onAlertClick(event, makeReservationLink) {
   event.preventDefault(); // prevent the browser from focusing the Notification's tab
-  window.open(make_reservation_url, "_blank");
+  window.open(makeReservationLink, "_blank");
 }
 
-function handleEnableNotificationButton() {
+function dispalySkiResortLabel(resort) {
+  switch (resort) {
+    case "alta":
+      return "Alta Snowbird";
+    case "bachelor":
+      return "Mount Bachelor";
+    case "copper":
+      return "Copper Mountain";
+  }
+}
+
+function handleEnableNotificationButton(makeReservationLink) {
   var title = "Notifications are enabled!";
-  var message = "Watch for this alert here if your day opens up. Click this notification to be taken to the Bachelor reservation page. Try it now!";
+  var message = "Watch for this alert here if your day opens up. Click this notification to be taken to the reservation page. Try it now!";
   if (!window.Notification) {
     console.log("Browser does not support notifications.");
   } else {
     // check if permission is already granted
     if (Notification.permission === "granted") {
       // show notification here
-      var theNotification = new Notification(title, {
-        body: message,
-        icon: "https://bit.ly/2DYqRrh"
-      });
-      theNotification.onclick = bachelor_notification;
+      var theNotification = new Notification(title, { body: message });
+      theNotification.onclick = function (e) {
+        return onAlertClick(e, makeReservationLink);
+      };
     } else {
       // request permission from user
       Notification.requestPermission().then(function (p) {
         if (p === "granted") {
           // show notification here
-          var notify = new Notification(title, {
-            body: message,
-            icon: "https://bit.ly/2DYqRrh"
-          });
-          notify.onclick = bachelor_notification;
+          var notify = new Notification(title, { body: message });
+          notify.onclick = function (e) {
+            return onAlertClick(e, makeReservationLink);
+          };
         } else {
           console.log("User blocked notifications.");
         }
