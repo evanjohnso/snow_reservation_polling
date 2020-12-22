@@ -108,17 +108,10 @@ class App extends React.Component {
 
     return (
       <AppWrapper>
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {this.state.daysToSki.map((day) => {
-            return (
-              <DateToSki
-                handleClick={this.handleRemoveDay}
-                day={day}
-                key={day}
-              />
-            );
-          })}
-        </div>
+        <SelectedDays
+          onRemove={this.handleRemoveDay}
+          selectedDays={this.state.daysToSki}
+        />
         <Step text="Step 1: Use Firefox" />
         <Step text="Step 2: Select your hill">
           <Dropdown
@@ -183,6 +176,16 @@ function AppWrapper(props) {
       className={"center"}
     >
       {props.children}
+    </div>
+  );
+}
+
+function SelectedDays(props) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
+      {props.selectedDays.map((day) => {
+        return <DateToSki handleClick={props.onRemove} day={day} key={day} />;
+      })}
     </div>
   );
 }

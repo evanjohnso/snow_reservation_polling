@@ -122,25 +122,16 @@ var App = function (_React$Component) {
   _createClass(App, [{
     key: "render",
     value: function render() {
-      var _this2 = this;
-
       var make_reservation_url = SKI_RESORTS[this.state.skiResort].make_reservation_url;
 
 
       return React.createElement(
         AppWrapper,
         null,
-        React.createElement(
-          "div",
-          { style: { display: "flex", flexWrap: "wrap" } },
-          this.state.daysToSki.map(function (day) {
-            return React.createElement(DateToSki, {
-              handleClick: _this2.handleRemoveDay,
-              day: day,
-              key: day
-            });
-          })
-        ),
+        React.createElement(SelectedDays, {
+          onRemove: this.handleRemoveDay,
+          selectedDays: this.state.daysToSki
+        }),
         React.createElement(Step, { text: "Step 1: Use Firefox" }),
         React.createElement(
           Step,
@@ -220,6 +211,16 @@ function AppWrapper(props) {
       className: "center"
     },
     props.children
+  );
+}
+
+function SelectedDays(props) {
+  return React.createElement(
+    "div",
+    { style: { display: "flex", flexWrap: "wrap" } },
+    props.selectedDays.map(function (day) {
+      return React.createElement(DateToSki, { handleClick: props.onRemove, day: day, key: day });
+    })
   );
 }
 
