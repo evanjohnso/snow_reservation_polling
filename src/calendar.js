@@ -73,7 +73,7 @@ class App extends React.Component {
 
   pollOnInterval = (days) => {
     if (days && days.length) {
-      return setInterval(() => this.pollIt(days), 10 * 1000);
+      return setInterval(() => this.pollIt(days), 2 * 1000);
     }
     return undefined;
   };
@@ -297,7 +297,7 @@ function onAlertClick(event, makeReservationLink) {
 function dispalySkiResortLabel(resort) {
   switch (resort) {
     case "alta":
-      return "Alta Snowbird";
+      return "Snowbird";
     case "bachelor":
       return "Mount Bachelor";
     case "copper":
