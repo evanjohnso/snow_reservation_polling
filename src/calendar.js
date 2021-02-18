@@ -17,14 +17,14 @@ const copper_mountain = {
     "https://www.coppercolorado.com/plan-your-trip/getting-here/parking",
 };
 
-const alta_mountain = {
+const snowbird_resort = {
   availability_url:
     "https://api.parkwhiz.com/v4/venues/478424/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
   make_reservation_url: "https://www.snowbird.com/parking/",
 };
 
 const SKI_RESORTS = {
-  alta: alta_mountain,
+  snowbird: snowbird_resort,
   bachelor: mount_bachelor,
   copper: copper_mountain,
 };
@@ -112,16 +112,16 @@ class App extends React.Component {
           onRemove={this.handleRemoveDay}
           selectedDays={this.state.daysToSki}
         />
-        <Step text="Step 1: Use Firefox" />
+        <Step text="Step 1: Use Brave, Chrome, or Firefox" />
         <Step text="Step 2: Select your hill">
           <Dropdown
             values={Object.keys(SKI_RESORTS)}
             onChange={this.handleResortChange}
             selectedValue={this.state.skiResort}
-            renderLabel={dispalySkiResortLabel}
+            renderLabel={displaySkiResortLabel}
           />
         </Step>
-        <Step text="Step 3: Enable notifications">
+        <Step text="Step 3: Allow browser notifications from this website">
           <NotificationsButton link={make_reservation_url} />
         </Step>
         <Step text="Step 4: Select your days">
@@ -159,7 +159,7 @@ function Calendar(props) {
 function NotificationsButton(props) {
   return (
     <button onClick={() => handleEnableNotificationButton(props.link)}>
-      Enable
+      Test
     </button>
   );
 }
@@ -294,9 +294,9 @@ function onAlertClick(event, makeReservationLink) {
   window.open(makeReservationLink, "_blank");
 }
 
-function dispalySkiResortLabel(resort) {
+function displaySkiResortLabel(resort) {
   switch (resort) {
-    case "alta":
+    case "snowbird":
       return "Snowbird";
     case "bachelor":
       return "Mount Bachelor";

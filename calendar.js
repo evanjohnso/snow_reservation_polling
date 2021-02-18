@@ -23,13 +23,13 @@ var copper_mountain = {
   make_reservation_url: "https://www.coppercolorado.com/plan-your-trip/getting-here/parking"
 };
 
-var alta_mountain = {
+var snowbird_resort = {
   availability_url: "https://api.parkwhiz.com/v4/venues/478424/events/?fields=%3Adefault%2Csite_url%2Cavailability%2Cvenue%3Atimezone&q=%20starting_after%3A2020-12-21T00%3A00%3A00-07%3A00&sort=start_time&zoom=pw%3Avenue",
   make_reservation_url: "https://www.snowbird.com/parking/"
 };
 
 var SKI_RESORTS = {
-  alta: alta_mountain,
+  snowbird: snowbird_resort,
   bachelor: mount_bachelor,
   copper: copper_mountain
 };
@@ -79,7 +79,7 @@ var App = function (_React$Component) {
       if (days && days.length) {
         return setInterval(function () {
           return _this.pollIt(days);
-        }, 10 * 1000);
+        }, 2 * 1000);
       }
       return undefined;
     };
@@ -132,7 +132,7 @@ var App = function (_React$Component) {
           onRemove: this.handleRemoveDay,
           selectedDays: this.state.daysToSki
         }),
-        React.createElement(Step, { text: "Step 1: Use Firefox" }),
+        React.createElement(Step, { text: "Step 1: Use Brave, Chrome, or Firefox" }),
         React.createElement(
           Step,
           { text: "Step 2: Select your hill" },
@@ -140,12 +140,12 @@ var App = function (_React$Component) {
             values: Object.keys(SKI_RESORTS),
             onChange: this.handleResortChange,
             selectedValue: this.state.skiResort,
-            renderLabel: dispalySkiResortLabel
+            renderLabel: displaySkiResortLabel
           })
         ),
         React.createElement(
           Step,
-          { text: "Step 3: Enable notifications" },
+          { text: "Step 3: Allow browser notifications from this website" },
           React.createElement(NotificationsButton, { link: make_reservation_url })
         ),
         React.createElement(
@@ -194,7 +194,7 @@ function NotificationsButton(props) {
     { onClick: function onClick() {
         return handleEnableNotificationButton(props.link);
       } },
-    "Enable"
+    "Test"
   );
 }
 
@@ -336,10 +336,10 @@ function onAlertClick(event, makeReservationLink) {
   window.open(makeReservationLink, "_blank");
 }
 
-function dispalySkiResortLabel(resort) {
+function displaySkiResortLabel(resort) {
   switch (resort) {
-    case "alta":
-      return "Alta Snowbird";
+    case "snowbird":
+      return "Snowbird";
     case "bachelor":
       return "Mount Bachelor";
     case "copper":
