@@ -79,7 +79,7 @@ var App = function (_React$Component) {
       if (days && days.length) {
         return setInterval(function () {
           return _this.pollIt(days);
-        }, 2 * 1000);
+        }, 7 * 1000);
       }
       return undefined;
     };

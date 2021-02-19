@@ -73,7 +73,7 @@ class App extends React.Component {
 
   pollOnInterval = (days) => {
     if (days && days.length) {
-      return setInterval(() => this.pollIt(days), 2 * 1000);
+      return setInterval(() => this.pollIt(days), 7 * 1000);
     }
     return undefined;
   };
