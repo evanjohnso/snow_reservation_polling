@@ -13,3 +13,6 @@ run `npx babel --watch src --out-dir . --presets react-app/prod`
 in the root directory to get updates locally (idk what i did to require this)
 
 This will map your changes from `src/calendar.js -> calendar.js`
+
+To load the local host, just load up the `index.html` file, which should be
+file:///Users/evanjohnson/personal/repos/snow_reservation_polling/index.html
